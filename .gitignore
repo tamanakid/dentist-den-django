@@ -1,1 +1,2 @@
 django_src/db.sqlite3
+.env
