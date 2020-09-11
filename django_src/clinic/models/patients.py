@@ -14,6 +14,7 @@ class Patient(models.Model):
 	firstname = models.CharField(max_length=32)
 	lastname_first = models.CharField(max_length=32)
 	lastname_second = models.CharField(max_length=32, blank=True)
+	# email = models.EmailField(blank=True)
 
 	# medical information
 	date_birth = models.DateField(null=True)
@@ -28,3 +29,7 @@ class Patient(models.Model):
 
 	def __str__(self):
 		return f"{self.lastname_first}, {self.firstname}"
+
+	@property
+	def fullname(self):
+		return f"{self.firstname} {self.lastname_first} {self.lastname_second}".rstrip()
