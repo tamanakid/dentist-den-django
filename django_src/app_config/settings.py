@@ -13,12 +13,13 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import environ
 from pathlib import Path
 
-# Python package for environment variable management
-env = environ.Env(DEBUG=(bool, False))
-environ.Env.read_env()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# Python package for environment variable management
+env = environ.Env(DEBUG=(bool, False))
+environ.Env.read_env(f'{BASE_DIR}/.env')
 
 
 # Quick-start development settings - unsuitable for production
