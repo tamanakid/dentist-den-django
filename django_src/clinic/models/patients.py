@@ -1,7 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
-
-from clinic.models import Medication
 
 
 class PatientType(models.IntegerChoices):
@@ -21,16 +18,16 @@ class Patient(models.Model):
 
 	# medical information
 	date_birth = models.DateField(null=True)
-	allergies = models.ManyToManyField(Medication, blank=True, related_name='allergic_patients')
-	prescriptions = models.ManyToManyField(Medication, blank=True, related_name='prescriptions', through='ClinicPrescription')
-	other_medication = models.ManyToManyField(Medication, blank=True, related_name='other_medication', through='OtherPrescription')
+	allergies = models.ManyToManyField('clinic.Medication', blank=True, related_name='allergic_patients')
+	other_medication = models.ManyToManyField('clinic.Medication', blank=True, related_name='other_medication', through='OtherPrescription')
 
 
 	# application-related information
+	is_active = models.BooleanField(default=True)
 	history_number = models.IntegerField(blank=False, null=False, unique=True)
 	date_created = models.DateField(auto_now_add=True)
 	# https://stackoverflow.com/questions/20203806/limit-maximum-choices-of-manytomanyfield
-	current_professional = models.ManyToManyField(User, blank=True, related_name='patients')
+	current_professional = models.ManyToManyField('auth.User', blank=True, related_name='patients')
 	patient_type = models.IntegerField(choices=PatientType.choices, default=PatientType.__empty__)
 	# notes_related
 
@@ -47,3 +44,10 @@ class Patient(models.Model):
 		last1 = self.lastname_first[0]
 		last2 = '' if self.lastname_second is None else self.lastname_second[0]
 		return f"{name}{last1}{last2}"
+	
+	@property
+	def all_prescriptions(self):
+		prescriptions = []
+		for appointment in self.appointments.all():
+			prescriptions.extend(appointment.prescriptions.all())
+		return prescriptions
