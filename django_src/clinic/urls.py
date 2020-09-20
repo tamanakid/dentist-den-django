@@ -8,7 +8,7 @@ router = routers.DefaultRouter()
 
 # router.register('users', views.UserViewSet)
 # router.register('groups', views.GroupViewSet)
-# router.register('patients', views.PatientViewSet)
+router.register('patients', views.PatientViewSet)
 # router.register('medications', views.MedicationViewSet)
 
 
