@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import m2m_changed
+from django.core.exceptions import ValidationError
 
 
 class PatientType(models.IntegerChoices):
@@ -51,3 +53,11 @@ class Patient(models.Model):
 		for appointment in self.appointments.all():
 			prescriptions.extend(appointment.prescriptions.all())
 		return prescriptions
+
+
+def add_professional(sender, instance, **kwargs):
+    if instance.current_professional.count() > 3:
+        raise ValidationError("A patient cannot be treated concurrently by more than three professionals")
+
+
+m2m_changed.connect(add_professional, sender=Patient.current_professional.through)
